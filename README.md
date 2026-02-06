@@ -1,7 +1,7 @@
-Auditory Focus Screen (v1.0.0)
+## Auditory Focus Screen (v1.0.0)
 
 <p align="center">
-  <img src="assets/ui.png" alt="Auditory Focus Screen UI" width="820">
+  <img src="assets/ui.png" alt="Auditory Focus Screen UI" width="400">
 </p>
 
 One-click REAPER Lua toggle: adds a single full-screen “focus blanket” track to reduce visual noise while you listen.
