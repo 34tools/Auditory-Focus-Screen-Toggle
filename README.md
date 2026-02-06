@@ -1,4 +1,4 @@
-# Auditory Focus Screen (34tools)
+# Auditory Focus Screen
 
 **Line:** 34tools Edit  
 **Category:** Listening Utility
