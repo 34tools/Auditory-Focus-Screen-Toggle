@@ -9,8 +9,6 @@ Auditory Focus Screen is a one-click REAPER Lua toggle that adds a single full-s
   <img src="assets/ui.png" alt="Auditory Focus Screen UI" width="400">
 </p>
 
-Part of **34tools — Audio Tools by Alexey Vorobyov (34birds)**.
-
 ---
 
 ## Overview
@@ -45,5 +43,11 @@ When you toggle it off, it removes the focus track and restores your previous se
 - Post-production editors
 - Sound designers doing critical listening
 - Anyone who gets distracted by a busy timeline
+
+---
+
+## Author
+
+Part of **34tools — Audio Tools by Alexey Vorobyov (34birds)**.
 
 
