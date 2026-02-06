@@ -5,11 +5,11 @@
 
 Auditory Focus Screen is a one-click REAPER Lua toggle that adds a single full-screen “focus blanket” track to reduce visual noise while you listen.
 
-Part of **34tools — Audio Tools by Alexey Vorobyov (34birds)**.
-
 <p align="center">
   <img src="assets/ui.png" alt="Auditory Focus Screen UI" width="400">
 </p>
+
+Part of **34tools — Audio Tools by Alexey Vorobyov (34birds)**.
 
 ---
 
