@@ -26,7 +26,7 @@ When you toggle it off, it removes the focus track and restores your previous se
 ## Features
 
 - Toggle script (run once to enable, run again to disable)
-- Creates one top track named `∪＾ェ＾∪`
+- Creates one top track named `U ^ ェ ^ U`
 - Track height expands to fill the arrange view (REAPER clamps to available space)
 - One long item spanning the project length (minimum 30s if the project is shorter)
 - Restores previous selection and arrange-view time range when disabled
