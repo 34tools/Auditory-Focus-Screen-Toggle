@@ -8,7 +8,7 @@ Auditory Focus Screen is a one-click REAPER Lua toggle that adds a single full-s
 Part of **34tools — Audio Tools by Alexey Vorobyov (34birds)**.
 
 <p align="center">
-  <img src="assets/ui.png" alt="Auditory Focus Screen UI" width="820">
+  <img src="assets/ui.png" alt="Auditory Focus Screen UI" width="400">
 </p>
 
 ---
