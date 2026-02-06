@@ -43,8 +43,9 @@ When you toggle it off, it removes the focus track and restores your previous se
 - Sound designers doing critical listening
 - Anyone who gets distracted by a busy timeline
 
---
+---
 
-Part of **34tools — Audio Tools by Alexey Vorobyov (34birds)**.
+## License
 
-
+MIT License.  
+© 2026 — 34tools — Audio Tools by Alexey Vorobyov (34birds)
