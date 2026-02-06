@@ -12,7 +12,7 @@ Auditory Focus Screen is a one-click REAPER Lua toggle that adds a single full-s
 
 ## Overview
 
-Auditory Focus Screen is built for moments when you want to *listen more than look*. It temporarily replaces the busy arrange view with a calm, minimal visual layer: one tall track at the top named `∪＾ェ＾∪` and one long neutral-colored item spanning the project length.
+Auditory Focus Screen is built for moments when you want to *listen more than look*. It temporarily replaces the busy arrange view with a calm, minimal visual layer: one tall track at the top and one long neutral-colored item spanning the project length.
 
 When you toggle it off, it removes the focus track and restores your previous selection and arrange-view time range.
 
