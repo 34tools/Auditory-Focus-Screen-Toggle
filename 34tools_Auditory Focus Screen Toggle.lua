@@ -1,11 +1,11 @@
 -- Auditory Focus Screen (34tools)
 -- Line: 34tools Edit
 -- 34tools — Audio Tools by Alexey Vorobyov (34birds)
--- @version 1.0.0
+-- @version 1.0.2
 -- @author Alexey Vorobyov (34birds)
 -- @about
 --   Part of 34tools (34tools Edit). REAPER Lua script. No js_ReaScriptAPI required.
--- @description 34tools: Auditory Focus Screen — One-track visual “focus blanket” for listening (fills screen). Line: 34tools Edit. Version: 1.0.0. License: MIT.
+-- @description 34tools: Auditory Focus Screen — One-track visual “focus blanket” for listening (fills screen). Line: 34tools Edit. Version: 1.0.2. License: MIT.
 -- @license MIT
 
 local r = reaper
@@ -27,8 +27,12 @@ local MIN_LEN = 30.0
 -- (REAPER clamps internally to what fits, so "very large" is enough)
 local TRACK_HEIGHT = 2000
 
--- Arrange view span around cursor (seconds)
-local VIEW_SPAN = 180.0
+-- On enable: arrange view span around edit cursor (seconds)
+local VIEW_SPAN_ON_ENABLE = 180.0
+
+-- On disable: keep ORIGINAL zoom (span) from before enabling,
+-- but re-center the view around the play cursor (or edit cursor if stopped).
+local CENTER_ON_CURSOR_ON_DISABLE = true
 
 -- ===== Helpers =====
 local function set_track_color(track, rr, gg, bb)
@@ -56,7 +60,7 @@ local function select_only_track(tr)
   if tr then r.SetOnlyTrackSelected(tr) end
 end
 
--- Save/restore selection + arrange view
+-- Save/restore selection + arrange view range (used to preserve zoom/span)
 local function save_context()
   local sel = r.GetSelectedTrack(proj, 0)
   local prev_guid = sel and r.GetTrackGUID(sel) or ""
@@ -67,15 +71,7 @@ local function save_context()
   r.SetProjExtState(proj, "34tools_audfocus", "view_end", tostring(end_t))
 end
 
-local function restore_context()
-  local _, s = r.GetProjExtState(proj, "34tools_audfocus", "view_start")
-  local _, e = r.GetProjExtState(proj, "34tools_audfocus", "view_end")
-  local start_t = tonumber(s or "")
-  local end_t   = tonumber(e or "")
-  if start_t and end_t and end_t > start_t then
-    r.GetSet_ArrangeView2(proj, true, 0, 0, start_t, end_t)
-  end
-
+local function restore_selection_only()
   local _, prev_guid = r.GetProjExtState(proj, "34tools_audfocus", "prev_guid")
   if prev_guid and prev_guid ~= "" then
     local n = r.CountTracks(proj)
@@ -87,6 +83,34 @@ local function restore_context()
       end
     end
   end
+end
+
+local function get_saved_view_span()
+  local _, s = r.GetProjExtState(proj, "34tools_audfocus", "view_start")
+  local _, e = r.GetProjExtState(proj, "34tools_audfocus", "view_end")
+  local a = tonumber(s or "")
+  local b = tonumber(e or "")
+  if a and b and b > a then
+    return (b - a), a, b
+  end
+  return nil, nil, nil
+end
+
+local function set_arrange_view_centered(pos, span)
+  if not span or span <= 0 then return end
+  local half = span * 0.5
+  local a = pos - half
+  if a < 0 then a = 0 end
+  local b = a + span
+  r.GetSet_ArrangeView2(proj, true, 0, 0, a, b)
+end
+
+local function get_follow_pos()
+  local st = r.GetPlayState() -- bitmask: 0 stop, 1 play, 2 pause, 5 rec
+  if st ~= 0 then
+    return r.GetPlayPosition()
+  end
+  return r.GetCursorPosition()
 end
 
 local function find_focus_track()
@@ -105,11 +129,11 @@ local function delete_focus_track(idx)
   if tr then r.DeleteTrack(tr) end
 end
 
-local function set_arrange_view_span_around_cursor()
+local function set_arrange_view_span_on_enable()
   local t = r.GetCursorPosition()
-  local half = VIEW_SPAN * 0.5
+  local half = VIEW_SPAN_ON_ENABLE * 0.5
   local a = math.max(0, t - half)
-  local b = a + VIEW_SPAN
+  local b = a + VIEW_SPAN_ON_ENABLE
   r.GetSet_ArrangeView2(proj, true, 0, 0, a, b)
 end
 
@@ -128,7 +152,6 @@ local function create_single_focus()
   r.GetSetMediaTrackInfo_String(tr, "P_NAME", TRACK_NAME, true)
 
   r.SetMediaTrackInfo_Value(tr, "I_HEIGHTOVERRIDE", TRACK_HEIGHT)
-
   set_track_color(tr, SOLID_R, SOLID_G, SOLID_B)
 
   local item = r.AddMediaItemToTrack(tr)
@@ -142,7 +165,7 @@ local function create_single_focus()
     r.GetSetMediaItemTakeInfo_String(take, "P_NAME", " ", true)
   end
 
-  set_arrange_view_span_around_cursor()
+  set_arrange_view_span_on_enable()
   select_only_track(tr)
 end
 
@@ -153,9 +176,22 @@ local function main()
 
   local tr, idx = find_focus_track()
   if tr and idx >= 0 then
+    -- Disable: remove focus track
     delete_focus_track(idx)
-    restore_context()
+
+    -- Restore selection (but not the old view position)
+    restore_selection_only()
+
+    if CENTER_ON_CURSOR_ON_DISABLE then
+      -- Keep original zoom/span, but center on play/edit cursor
+      local span = get_saved_view_span()
+      local pos = get_follow_pos()
+      if span then
+        set_arrange_view_centered(pos, span)
+      end
+    end
   else
+    -- Enable
     create_single_focus()
   end
 
@@ -166,4 +202,3 @@ local function main()
 end
 
 main()
-
